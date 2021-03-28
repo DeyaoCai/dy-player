@@ -1,6 +1,7 @@
 
 
 module.exports = {
+  publicPath: './',
   devServer: {
     open: false,
     port: 8989,

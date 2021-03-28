@@ -107,8 +107,6 @@
 
       },
       login() {
-        localStorage.setItem('userPhone', '16621079485')
-        localStorage.setItem('password', 'a13789')
         const user = {phone: localStorage.getItem('userPhone'), password: localStorage.getItem('password'),};
         if (!user.password || !user.password) {
           ShortCut.toast(['正式环境位开放远程歌曲']);

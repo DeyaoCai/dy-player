@@ -15,7 +15,7 @@
       <CanvasView
         v-for="(item, index) in modifyManager.list[0].list"
         :config="item"
-        v-if="commonOptions.CanvasView && item && item.constructor.name === 'CanvasTrack'"
+        v-if="commonOptions.CanvasView && item && item.constructor.name_ === 'CanvasTrack'"
       ></CanvasView>
     </div>
     <VideoView :index="0" v-if="commonOptions.VideoView"></VideoView>
@@ -50,8 +50,8 @@
 
     const modifyManager = new ModifyManager();
 
-    const commonOptions_ = modifyManager.list.find(i => i.constructor.name === 'TrackList')
-      .list.find(i => i.constructor.name === 'CommonOptionsTrack').list;
+    const commonOptions_ = modifyManager.list.find(i => i.constructor.name_ === 'TrackList')
+      .list.find(i => i.constructor.name_ === 'CommonOptionsTrack').list;
 
     const gameWrap = DomUtil.node('div');
     DomUtil.class(gameWrap, 'game-wrap');

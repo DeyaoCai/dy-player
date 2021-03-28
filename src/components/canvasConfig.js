@@ -1,6 +1,7 @@
 import defaultJson from '../../userConfig/trackPresets/default';
 export class Track {
   static commonConfigs = {};
+  static name_ = 'Track';
 
   static setConfig(key, name, value, valueType, min, max, desc) {
     CanvasTrack.commonConfigs.push([key, name, value, valueType, min, max, desc]);
@@ -10,7 +11,7 @@ export class Track {
     this.current = 0;
     this.playing = 0;
     this.list = [];
-    Track.commonConfigs[this.constructor.name].forEach(item => {
+    Track.commonConfigs[this.constructor.name_].forEach(item => {
       const [key, name, value, valueType, min, max, desc] = item;
       const defaultVal = defaultValue[key];
       this.list.push({key, name, value: defaultVal !== undefined ? defaultVal : value, valueType, min, max, desc});
@@ -35,19 +36,23 @@ export class Track {
     if (index < 0) index = 0;
     this.current = index;
     this.play();
+    return this;
   }
 
   // 设置轨道， 打开轨道编辑器
   play() {
     this.playing = this.current;
+    return this;
   }
 
   prev() {
     this.setIndex((this.current - 1 + this.len) % this.len);
+    return this;
   }
 
   next() {
     this.setIndex((this.current + 1) % this.len);
+    return this;
   }
 
   enc() {
@@ -61,6 +66,7 @@ export class Track {
       val = thisItem.min;
     }
     thisItem.value = val;
+    return this;
   }
 
   dec() {
@@ -74,33 +80,38 @@ export class Track {
       val = thisItem.min;
     }
     thisItem.value = val;
+    return this;
   }
 }
 
 export class CanvasTrack extends Track {
+  static name_ = 'CanvasTrack';
   constructor() {
     const [name, ...rest] = arguments;
     super(...rest);
-    this.name = name || this.constructor.name;
+    this.name = name || this.constructor.name_;
   }
 
   static setConfig(key, name, value, valueType, min, max, desc) {
     Track.commonConfigs.CanvasTrack || (Track.commonConfigs.CanvasTrack = []);
     Track.commonConfigs.CanvasTrack.push([key, name, value, valueType, min, max, desc]);
+    return CanvasTrack;
   }
 }
 
 
 export class VideoTrack extends Track {
+  static name_ = 'VideoTrack';
   constructor() {
     const [name, ...rest] = arguments;
     super(...rest);
-    this.name = name || this.constructor.name;
+    this.name = name || this.constructor.name_;
   }
 
   static setConfig(key, name, value, valueType, min, max, desc) {
     Track.commonConfigs.VideoTrack || (Track.commonConfigs.VideoTrack = []);
     Track.commonConfigs.VideoTrack.push([key, name, value, valueType, min, max, desc]);
+    return VideoTrack;
   }
 }
 
@@ -134,15 +145,17 @@ CanvasTrack.setConfig('threshold', '阈值', 7, 'int', 0, 100, '百分比预设'
 
 
 export class CommonOptionsTrack extends Track {
+  static name_ = 'CommonOptionsTrack';
   constructor() {
     const [name, ...rest] = arguments;
     super(...rest);
-    this.name = name || this.constructor.name;
+    this.name = name || this.constructor.name_;
   }
 
   static setConfig(key, name, value, valueType, min, max, desc) {
     Track.commonConfigs.CommonOptionsTrack || (Track.commonConfigs.CommonOptionsTrack = []);
     Track.commonConfigs.CommonOptionsTrack.push([key, name, value, valueType, min, max, desc]);
+    return CommonOptionsTrack;
   }
 }
 
@@ -160,15 +173,17 @@ CommonOptionsTrack.setConfig('BalanceTrack', '显示均衡器', 0, 'int', 0, 1, 
 
 
 export class GameTrack extends Track {
+  static name_ = 'GameTrack';
   constructor() {
     const [name, ...rest] = arguments;
     super(...rest);
-    this.name = name || this.constructor.name;
+    this.name = name || this.constructor.name_;
   }
 
   static setConfig(key, name, value, valueType, min, max, desc) {
     Track.commonConfigs.GameTrack || (Track.commonConfigs.GameTrack = []);
     Track.commonConfigs.GameTrack.push([key, name, value, valueType, min, max, desc]);
+    return GameTrack;
   }
 }
 
@@ -182,15 +197,17 @@ GameTrack.setConfig('trick', '开启作弊模式', 0, 'int', 0, 1, '是否开启
 
 
 export class BalanceTrack extends Track {
+  static name_ = 'BalanceTrack';
   constructor() {
     const [name, ...rest] = arguments;
     super(...rest);
-    this.name = name || this.constructor.name;
+    this.name = name || this.constructor.name_;
   }
 
   static setConfig(key, name, value, valueType, min, max, desc) {
     Track.commonConfigs.BalanceTrack || (Track.commonConfigs.BalanceTrack = []);
     Track.commonConfigs.BalanceTrack.push([key, name, value, valueType, min, max, desc]);
+    return BalanceTrack;
   }
 }
 
@@ -214,11 +231,12 @@ export class ModifyManager {
 
 
   init(){
-    this.trackList = this.list.find(i => i.constructor.name === 'TrackList');
-    this.commonOptions = this.list.find(i => i.constructor.name === 'TrackList').list.find(i => i.constructor.name === 'CommonOptionsTrack');
-    this.gameTrack = this.list.find(i => i.constructor.name === 'TrackList').list.find(i => i.constructor.name === 'GameTrack');
-    this.balanceTrack = this.list.find(i => i.constructor.name === 'TrackList').list.find(i => i.constructor.name === 'BalanceTrack');
-    this.updateCommonOptions && this.updateCommonOptions()
+    this.trackList = this.list.find(i => i.constructor.name_ === 'TrackList');
+    this.commonOptions = this.list.find(i => i.constructor.name_ === 'TrackList').list.find(i => i.constructor.name_ === 'CommonOptionsTrack');
+    this.gameTrack = this.list.find(i => i.constructor.name_ === 'TrackList').list.find(i => i.constructor.name_ === 'GameTrack');
+    this.balanceTrack = this.list.find(i => i.constructor.name_ === 'TrackList').list.find(i => i.constructor.name_ === 'BalanceTrack');
+    this.updateCommonOptions && this.updateCommonOptions();
+    return this;
   }
 
   get len() {
@@ -226,15 +244,18 @@ export class ModifyManager {
   }
   savePresets(){
     this.trackList.savePresets();
+    return this;
   }
 
   setList(list) {
     this.list = list;
     this.current = 0;
+    return this;
   }
 
   replace(index, replacer) {
     this.list.splice(index, 1, replacer);
+    return this;
   }
 
   // 设置轨道
@@ -243,6 +264,7 @@ export class ModifyManager {
     if (index < 0) index = 0;
     this.current = index;
     this.play();
+    return this;
   }
 
   // 设置轨道， 打开轨道编辑器
@@ -251,56 +273,68 @@ export class ModifyManager {
     if (this.current === 0) {
       this.replace(1, this.list[this.current])
     }
-    this.list[this.current].play()
+    this.list[this.current].play();
+    return this;
   }
 
   prev() {
     this.setIndex((this.current - 1 + this.len) % this.len);
+    return this;
   }
 
   next() {
     this.setIndex((this.current + 1) % this.len);
+    return this;
   }
 
   enc() {
     this.list[this.current] && this.list[this.current].enc();
     this.trackList.savePresets();
+    return this;
   }
 
   dec() {
     this.list[this.current] && this.list[this.current].dec();
     this.trackList.savePresets();
+    return this;
   }
 
   prevItem() {
-    this.list[this.current] && this.list[this.current].prev()
+    this.list[this.current] && this.list[this.current].prev();
+    return this;
   }
 
   nextItem() {
-    this.list[this.current] && this.list[this.current].next()
+    this.list[this.current] && this.list[this.current].next();
+    return this;
   }
 
   up() {
-    this.list[0].prev()
+    this.list[0].prev();
+    return this;
   }
 
   down() {
-    this.list[0].next()
+    this.list[0].next();
+    return this;
   }
 
   add() {
     this.list[0].add.call(this.list[0], ...arguments);
     this.list[0].savePresets();
+    return this;
   }
 
   delete() {
     this.list[0].delete.call(this.list[0], ...arguments);
     this.list[0].savePresets();
+    return this;
   }
 
   copy() {
     this.list[0].copy.call(this.list[0], ...arguments);
     this.list[0].savePresets();
+    return this;
   }
 }
 
@@ -309,6 +343,7 @@ const constructorList = [GameTrack, BalanceTrack, CommonOptionsTrack];
 // 轨道列表管理器
 // 可以是 canvas 轨道 和视频轨道 // 左侧第一栏
 class TrackList {
+  static name_ = 'TrackList';
   static CanvasTrack = CanvasTrack;
   static VideoTrack = VideoTrack;
   static CommonOptionsTrack = CommonOptionsTrack;
@@ -323,10 +358,11 @@ class TrackList {
       item.list.forEach(key => {
         data[key.key] = item[key.key];
       });
-      return {name: item.name, data, type: item.constructor.name}
+      return {name: item.name, data, type: item.constructor.name_}
     });
     this.parent.updateCommonOptions();
     localStorage.setItem('configPresets', JSON.stringify(result));
+    return this;
 
     // const {fs, path, process} = window.node;
     // const outputPath = path.join(process.cwd(), './userConfig/trackPresets/default.json');
@@ -341,7 +377,7 @@ class TrackList {
       presets.length || presets.push({});
 
       constructorList.forEach(constructor => {
-        const constructorName = constructor.name;
+        const constructorName = constructor.name_;
         const hasDot = presets.some(i => i.type === constructorName);
         if (!hasDot) {
           this.add({type: constructorName, name: constructorName})
@@ -355,6 +391,7 @@ class TrackList {
       console.log(e);
       console.log('load presets fail.');
     }
+    return this;
   }
 
   constructor(parent) {
@@ -365,8 +402,8 @@ class TrackList {
     this.loadPresets();
 
     constructorList.forEach(constructor => {
-      const constructorName = constructor.name;
-      const hasDto = this.list.some(i => i.constructor.name === constructorName);
+      const constructorName = constructor.name_;
+      const hasDto = this.list.some(i => i.constructor.name_ === constructorName);
       if (!hasDto) {
         this.add({type: constructorName, name: constructorName})
       }
@@ -382,9 +419,11 @@ class TrackList {
   add(options = {}, len = 1) {
     const {type = 'CanvasTrack', name, data} = options;
     for (let i = 0; i < len; i++) {
-      this.list.push(new TrackList[type](name, data));
+      console.log(TrackList[type], type);
+      TrackList[type] && this.list.push(new TrackList[type](name, data));
     }
     this.setIndex(this.len - 1);
+    return this;
   }
 
   delete() {
@@ -393,19 +432,22 @@ class TrackList {
       this.list.splice(this.current, 1);
       this.setIndex(0);
     }
+    return this;
   }
 
   copy() {
     const item = this.list[this.current];
-    if (item && !['CommonOptionsTrack', 'BalanceTrack'].includes(item.constructor.name)) {
+    if (item && !['CommonOptionsTrack', 'BalanceTrack'].includes(item.constructor.name_)) {
       this.list.splice(this.current, 0, new item.constructor(item.name + 'Copy', item));
       this.setIndex(this.current + 1);
     }
+    return this;
   }
 
   setList(list) {
     this.list = list;
     this.current = 0;
+    return this;
   }
 
   // 设置轨道
@@ -414,20 +456,24 @@ class TrackList {
     if (index < 0) index = 0;
     this.current = index;
     this.play();
+    return this;
   }
 
   // 设置轨道， 打开轨道编辑器
   play() {
     this.playing = this.current;
     this.parent.replace(1, this.list[this.current]);
+    return this;
   }
 
   prev() {
     this.setIndex((this.current - 1 + this.len) % this.len);
+    return this;
   }
 
   next() {
     this.setIndex((this.current + 1) % this.len);
+    return this;
   }
 }
 
