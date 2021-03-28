@@ -15,7 +15,7 @@ npm run serve
 npm run build
 ```
 
-### 调试服务
+### 调试服务[网易云接口原仓库地址 仅供学习使用](https://binaryify.github.io/NeteaseCloudMusicApi/#/)
 ```
 npm run proxy
 ```
