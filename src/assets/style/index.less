@@ -1,0 +1,520 @@
+@font-face {
+  font-family: 'pmzdbtt';
+  src: url("../font/庞门正道标题体3.0.ttf");
+}
+
+* {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  outline: 0;
+  box-sizing: border-box;
+  font-family: Helvetica, roboto, Calibri, Tahoma, Verdana, Arial, 'Hiragino Sans GB', Stheiti, 'WenQuanYi Micro Hei', \5FAE\8F6F\96C5\9ED1, \5B8B\4F53, sans-serif;
+}
+
+*::-webkit-scrollbar {
+  width: 0;
+}
+
+ul,
+li {
+  list-style: none;
+}
+
+html,
+body {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  position: relative;
+  color: #fff;
+  text-align: center;
+  background-color: #000;
+}
+
+b {
+  display: block;
+  position: absolute;
+  background-size: 1920px 1080px;
+  border-radius: 2px;
+  z-index: 2;
+  color: pink;
+  text-align: center;
+}
+
+img {
+  width: 100%;
+  top: 0;
+  left: 0;
+  position: absolute;
+  opacity: 0;
+}
+
+.desktopImage {
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  transform: translateY(0%);
+  position: absolute;
+  background-size: cover;
+  transition: all 0.6s ease-in-out;
+  filter: url('#blur0');
+  display: none;
+  will-change: filter;
+  opacity: 0;
+}
+
+.desktopImage.expired {
+  display: block;
+}
+
+.desktopImage.active {
+  display: block;
+  animation: sBlur 0.2s;
+  z-index: 1;
+}
+
+.desktopImage.vertical.active {
+  animation: sBlur-v 0.2s;
+}
+
+.desktopImage.sBlur--45.active {
+  animation: sBlur--45 0.2s;
+}
+
+@keyframes sBlur {
+  0% {
+    filter: url("#blur10");
+  }
+
+  20% {
+    filter: url("#blur8");
+  }
+
+  40% {
+    filter: url("#blur6");
+  }
+
+  60% {
+    filter: url("#blur4");
+  }
+
+  80% {
+    filter: url("#blur2");
+  }
+
+  100% {
+    filter: url("#blur0");
+  }
+}
+
+@keyframes sBlur-v {
+  0% {
+    filter: url("#blur10-v");
+  }
+
+  20% {
+    filter: url("#blur8-v");
+  }
+
+  40% {
+    filter: url("#blur6-v");
+  }
+
+  60% {
+    filter: url("#blur4-v");
+  }
+
+  80% {
+    filter: url("#blur2-v");
+  }
+
+  100% {
+    filter: url("#blur0");
+  }
+}
+
+@keyframes sBlur--45 {
+  0% {
+    filter: url("#blur10--45");
+  }
+
+  20% {
+    filter: url("#blur8--45");
+  }
+
+  40% {
+    filter: url("#blur6--45");
+  }
+
+  60% {
+    filter: url("#blur4--45");
+  }
+
+  80% {
+    filter: url("#blur2--45");
+  }
+
+  100% {
+    filter: url("#blur0");
+  }
+}
+
+.wrap {
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  position: absolute;
+  z-index: 10;
+}
+
+body::after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3000 !important;
+}
+
+@keyframes ratating {
+  0% {
+    transform: translate(-50%, -50%) rotate(0);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+.sound-track {
+  position: absolute;
+  top: 45vh;
+  width: 80vw;
+  left: 10vw;
+  display: flex;
+  justify-content: center;
+  z-index: 2950;
+}
+
+.sound-track li {
+  flex: 0 0 2px;
+  height: 2px;
+  margin: 0 2px;
+  background: #fff;
+}
+
+.current-time {
+  display: flex;
+  flex-direction: column;
+  perspective: 100px;
+  transform-style: preserve-3d;
+  position: relative;
+  z-index: 9;
+}
+
+.current-time span {
+  color: inherit;
+  transition: all 0.3s;
+}
+
+.current-time span:nth-of-type(1) {
+  font-size: 18px;
+  line-height: 18px;
+  opacity: 0.6;
+  transform: rotateX(10deg) scaleY(0.8);
+}
+
+.current-time span:nth-of-type(2) {
+  font-size: 36px;
+  line-height: 36px;
+  font-weight: bold;
+}
+
+.current-time span:nth-of-type(3) {
+  font-size: 12px;
+  line-height: 12px;
+  transform: rotateX(-10deg) scaleY(0.8);
+}
+
+.song-progress {
+  padding: 0 30vw;
+}
+
+.song-progress > div {
+  position: relative;
+  width: 100%;
+  height: 0;
+  margin: 10px auto;
+  background-color: rgba(256, 0, 0, 1);
+  z-index: 9;
+  padding-right: 50%;
+  display: flex;
+}
+
+.song-progress > div::before,
+.song-progress > div::after {
+  content: '';
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  height: 4px;
+  width: 100%;
+  flex: 1 1 0;
+  background-color: inherit;
+  border-radius: 4px;
+  opacity: 0.2;
+}
+
+.song-progress > div::before {
+  position: relative;
+}
+
+.song-progress > div > span {
+  display: inline-block;
+  height: 8px;
+  width: 8px;
+  background-color: inherit;
+  margin: -2px -4px;
+}
+
+.short-cut-view {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2999;
+
+  > div {
+    display: flex;
+    font-size: 30px;
+    transform: scale(0, 0);
+    justify-content: center;
+    align-items: center;
+    height: 0;
+    overflow: hidden;
+    transition: all 0.3s;
+    transform-origin: center top;
+    span {
+      margin: 0 10px;
+      padding: 10px;
+      border: 1px solid #fff;
+      border-radius: 2px;
+      font-family: pmzdbtt;
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+    &.active {
+      transform: scale(1, 1);
+      transition: all 0.6s;
+      height: 60px;
+      transform-origin: center bottom;
+    }
+    &.hide {
+      transform: scale(0, 0);
+    }
+  }
+}
+
+.game-combo {
+  position: absolute;
+  top: calc(20vh - 50px);
+  left: 50%;
+  text-shadow: 0 0 60px hsla(15, 50%, 50%, 1);
+  font-size: 32px;
+  display: flex;
+  width: 300px;
+  height: 100px;
+  transform: translate(-50%, -50%) scale(1);
+  justify-content: center;
+  align-items: center;
+  z-index: 2900;
+  animation: gameCombo linear 0.3s;
+}
+
+@keyframes gameCombo {
+  0% {
+    opacity: 0;
+    transform: translate(-100%, -50%);
+  }
+
+  100% {
+    transform: translate(-50%, -50%);
+  }
+}
+
+.game-score {
+  position: absolute;
+  top: calc(30vh - 50px);
+  left: 50%;
+  text-shadow: 0 0 60px hsla(15, 50%, 50%, 1);
+  font-size: 32px;
+  display: flex;
+  width: 300px;
+  height: 100px;
+  transform: translate(-50%, -50%) scale(1);
+  justify-content: center;
+  align-items: center;
+  z-index: 2900;
+  animation: currentScore linear 0.3s;
+}
+
+@keyframes currentScore {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes gaming {
+  0% {
+    opacity: 0;
+    transform: translateZ(-1800px) rotateX(0deg);
+  }
+
+  80% {
+    opacity: 0.6;
+  }
+
+  90% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateZ(200px) rotateX(0deg);
+  }
+}
+
+@keyframes gamingDebug {
+  0% {
+    opacity: 0;
+    transform: translateZ(-1800px) rotateX(0deg);
+  }
+
+  76% {
+    opacity: 0.6;
+  }
+
+  8.55% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateZ(0) rotateX(0deg);
+  }
+}
+
+.game-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transform-origin: center center;
+  perspective: 4000px;
+  z-index: 2900;
+
+  .game-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transform-origin: center center;
+    perspective: 400px;
+
+    .game-item {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      animation: gaming linear 1s;
+
+      > div {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 15%;
+      }
+    }
+  }
+}
+
+.game-scene {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  width: 800px;
+  height: 800px;
+  animation: gameScene linear 1s;
+  transform-origin: center top;
+
+  div {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 5%;
+    background: linear-gradient(hsl(0, 50%, 50%), hsl(255, 50%, 50%));
+    //box-shadow:
+    //        0 0 100px hsla(0, 50%, 50%, 1),
+    //        0 0 200px hsla(0, 50%, 50%, 1),
+    //        0 0 400px hsla(0, 50%, 50%, 1)
+  ;
+  }
+}
+
+@keyframes sceneShining {
+  0% {
+    box-shadow: 0 0 400px hsla(0, 50%, 50%, 1);
+  }
+
+  30% {
+  }
+
+  60% {
+  }
+
+  100% {
+    box-shadow: 0 0 400px hsla(0, 50%, 50%, 1);
+  }
+}
+
+@keyframes gameScene {
+  0% {
+    //filter: blur(40px);
+    opacity: 0;
+    transform: rotateX(0deg) translateZ(-4000px);
+  }
+
+  30% {
+    opacity: 1;
+  }
+  60% {
+    //filter: blur(0);
+  }
+
+  100% {
+    transform: rotateX(0deg) translateZ(0);
+  }
+}

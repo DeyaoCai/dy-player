@@ -1,0 +1,1 @@
+const cwd=process.cwd();function resolve(e){return require(path.join(cwd,"./public/node/",e))}module.exports={resolve:resolve};

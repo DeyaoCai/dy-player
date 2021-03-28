@@ -1,0 +1,132 @@
+[
+  {
+    "name": "GameTrack",
+    "data": {
+      "RhythmPointVolumeFloatRange": 0,
+      "RhythmPointTimeout": 0,
+      "RhythmPointRemoveFloatRange": 60,
+      "RhythmPointMissTipSound": 0,
+      "RhythmPointCenterPointOffset": 5,
+      "trick": 0
+    },
+    "type": "GameTrack"
+  },
+  {
+    "name": "BalanceTrack",
+    "data": {
+      "balance0": 0,
+      "balance1": 0,
+      "balance2": 0,
+      "balance3": 0,
+      "balance4": 0,
+      "balance5": 0,
+      "balance6": 0,
+      "balance7": 0,
+      "balance8": 0,
+      "balance9": 0,
+      "balance10": 0,
+      "balance11": 0
+    },
+    "type": "BalanceTrack"
+  },
+  {
+    "name": "CanvasTrackCopyCopyCopy",
+    "data": {
+      "disable": 1,
+      "renderType": 1,
+      "direction": 0,
+      "baseSizeType": 0,
+      "noZero": 0,
+      "copyData": 0,
+      "showDataBefore": 1,
+      "midPositionX": 50,
+      "midPositionY": 40,
+      "clearPrevView": 96,
+      "mainRadius": 60,
+      "avrLevelMainRadiusModify": 100,
+      "mainRadiusOpacity": 100,
+      "mainRadiusLineWidth": 1,
+      "floatRange": 2,
+      "avrLevelFloatRangeModify": 0,
+      "stepModify": 10,
+      "lineLineWidth": 1,
+      "dataModify": 51,
+      "dataOffsetModify": 0,
+      "minHeightModify": 0,
+      "threshold": 0
+    },
+    "type": "CanvasTrack"
+  },
+  {
+    "name": "CanvasTrackCopyCopy",
+    "data": {
+      "disable": 1,
+      "renderType": 3,
+      "direction": 0,
+      "baseSizeType": 0,
+      "noZero": 0,
+      "copyData": 0,
+      "showDataBefore": 1,
+      "midPositionX": 50,
+      "midPositionY": 40,
+      "clearPrevView": 96,
+      "mainRadius": 60,
+      "avrLevelMainRadiusModify": 100,
+      "mainRadiusOpacity": 100,
+      "mainRadiusLineWidth": 1,
+      "floatRange": 2,
+      "avrLevelFloatRangeModify": 0,
+      "stepModify": 10,
+      "lineLineWidth": 3,
+      "dataModify": 51,
+      "dataOffsetModify": 0,
+      "minHeightModify": 0,
+      "threshold": 0
+    },
+    "type": "CanvasTrack"
+  },
+  {
+    "name": "CommonOptionsTrack",
+    "data": {
+      "CanvasView": 0,
+      "CanvasPic": 0,
+      "CanvasPicMalfunction": 0,
+      "CanvasText": 0,
+      "CanvasTextMalfunction": 0,
+      "changeBG_When_LRC_Changed": 0,
+      "VideoView": 0,
+      "VideoView1": 0,
+      "DomClock": 0,
+      "BalanceTrack": 0
+    },
+    "type": "CommonOptionsTrack"
+  },
+  {
+    "name": "CanvasTrack",
+    "data": {
+      "disable": 0,
+      "renderType": 2,
+      "direction": 0,
+      "baseSizeType": 0,
+      "noZero": 0,
+      "copyData": 0,
+      "showDataBefore": 0,
+      "midPositionX": 50,
+      "midPositionY": 50,
+      "clearPrevView": 70,
+      "mainRadius": 25,
+      "avrLevelMainRadiusModify": 25,
+      "mainRadiusOpacity": 0,
+      "mainRadiusLineWidth": 0,
+      "floatRange": 10,
+      "avrLevelFloatRangeModify": 25,
+      "stepModify": 10,
+      "lineLineWidth": 0,
+      "dataModify": 5,
+      "dataOffsetModify": 0,
+      "minHeightModify": 0,
+      "threshold": 0
+    },
+    "type": "CanvasTrack"
+  }
+]
