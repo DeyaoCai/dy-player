@@ -90,7 +90,7 @@ class MVData{
     const avrLevel = this.avrLevel = this.total / data.length;
     const addSpeed = this.addSpeed = avrLevel - prevAvrLevel;
 
-    const {RhythmPointVolumeFloatRange = 0} = this.modifyManager.gameTrack;
+    const RhythmPointVolumeFloatRange = this.modifyManager.getTrackByName('GameTrack').getVal('RhythmPointVolumeFloatRange');
     /**
      * 转折点， 声音开始变大的第一帧。 乐器的吹奏、敲击（或者人发声）的瞬间， 大概率会使音量提高。
      * 所以就是 音量从减小， 突变到开始升高表示是个节奏点；
@@ -186,15 +186,14 @@ class GameNode {
     const dom = this.dom = DomUtil.node('div');
     dom.className = 'game-item';
 
-
     if (isDebug) {
       this.isDebug = isDebug;
       // @ts-ignore;
-      dom.style = `animation: gamingDebug linear 0.945s;`;
+      dom.style = `animation: gamingDebug linear 0.8s;`;
     }
 
     const hueRange = 120;
-    const deg = rhythmPoint.vol * this.modifyManager.gameTrack.RhythmPointCenterPointOffset;
+    const deg = rhythmPoint.vol * this.modifyManager.getTrackByName('GameTrack').getVal('RhythmPointCenterPointOffset');
 
     const innerDom = DomUtil.node('div');
     DomUtil.append(dom, innerDom);
@@ -219,7 +218,7 @@ class GameNode {
     if (this.score !== undefined) {
       Sound.play("done");
     }else {
-      this.modifyManager.gameTrack.RhythmPointMissTipSound && Sound.play('warning');
+      this.modifyManager.getTrackByName('GameTrack').getVal('RhythmPointMissTipSound') && Sound.play('warning');
     }
 
     dom.removeEventListener('webkitAnimationEnd', this.endFunction);
@@ -344,12 +343,11 @@ export class GameScene {
     this.time = Date.now();
     const dom = this.dom = DomUtil.node('div');
     dom.className = 'game-scene';
-
     // @ts-ignore;
     let list = [...gameData.data].filter(i => i).filter((x, i) => !(i % 16));
     // list.length || (list = [0]);
     const per = 360 / list.length;
-    const deg = musicData.originData.avrLevel * modifyManager.gameTrack.RhythmPointCenterPointOffset;
+    const deg = musicData.originData.avrLevel * (modifyManager.getTrackByName('GameTrack').getVal('RhythmPointCenterPointOffset') || 0);
     // @ts-ignore;
     dom.innerHTML = list.map((item: number, index: number) => {
       return `<div style="transform: rotateZ(${-(index) * per + 180 +deg}deg) translate(0, calc(400px + ${item * 10}px));"></div>`;
@@ -371,8 +369,17 @@ export class GameScene {
   }
 }
 
-
-
+interface UniqueListItem {
+  id: number|string;
+  [index: string]: any;
+}
+export class UniqueList {
+  list: UniqueListItem[] = [];
+  enter(item: UniqueListItem){
+    const index = this.list.findIndex(item_ => item.id === item_.id);
+    index === -1 ? this.list.push(item) : this.list.splice(index, 1);
+  }
+}
 
 export class Color {
   static compose(i: number) {

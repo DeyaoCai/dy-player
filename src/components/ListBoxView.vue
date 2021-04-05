@@ -1,7 +1,7 @@
 <template>
-  <label :for="id" class="music-wrap" :class="{focus: isFocus}">
+  <label :for="itemId" class="music-wrap" :class="{focus: isFocus}">
     <div class="search-box" :class="{focus: isFocus}">
-      <input :id="id" ref="input" type="text" v-model="config.searchText" placeholder="网易云音乐" @focus="focus" @blur="blur">
+      <input :id="itemId" ref="input" type="text" v-model="config.searchText" autocomplete="off" placeholder="网易云音乐" @focus="focus" @blur="blur">
     </div>
     <div class="music-lists">
       <div
@@ -19,20 +19,26 @@
         ></span>
         <div>
           <ul
-            :style="{transform: `translateY(-${30 * tabItem.current}px)`}">
+            :style="{transform: `translateY(-${50 * tabItem.current}px)`}">
             <li
               v-for="(song, _index) in tabItem.list"
               :class="{active: tabItem.current === _index, playing: tabItem.playing === _index}"
+              @click.stop="tabItem.setIndex(_index, 'list_box_click')"
             >
-              <span @click.stop="tabItem.setIndex(_index).play()">
-                <img :src="getImgUrl(song)" v-if="getImgUrl(song)"/>
-                {{ song.name }}
-                <template v-if="config.type === 'modify' && index === 1">
-                  &nbsp;&nbsp;
-                  {{ tabItem.list[_index].value }} /
-                  {{ tabItem.list[_index].min }} /
-                  {{ tabItem.list[_index].max }}
-                  &nbsp;&nbsp;当前/最小/最大
+              <span>
+
+                <ProgressBar template v-if="config.type === 'modify' && index === 1" :config="song"></ProgressBar>
+                <template v-else>
+                  <img :src="getImgUrl(song)" v-if="getImgUrl(song)"/>
+                  {{ song.name }}
+                  <span class="button" @click="tabItem.setIndex(_index, 'list_box_click').play('list_box_click')">play</span>
+                  <span v-if="tabItem.copy" class="button" @click="tabItem.setIndex(_index, 'list_box_click').copy('list_box_click')">copy</span>
+                  <span v-if="tabItem.delete" class="button" @click="tabItem.setIndex(_index, 'list_box_click').delete('list_box_click')">delete</span>
+                  <span
+                    v-if="song.rename"
+                    class="button"
+                    @click="config.searchText && song.rename(config.searchText, 'list_box_click')"
+                  >rename</span>
                 </template>
               </span>
             </li>
@@ -40,20 +46,22 @@
         </div>
       </div>
 
-      <div class="music-lists-prev" @click.stop="tabs.prev()"> prev </div>
-      <div class="music-lists-next" @click.stop="tabs.next()"> next </div>
+      <div class="music-lists-prev" @click.stop="tabs.prev()">  </div>
+      <div class="music-lists-next" @click.stop="tabs.next()">  </div>
     </div>
   </label>
 </template>
 <script>
   import {shortCut, ShortCut} from "../tools/ShortCut";
-
+  import ProgressBar from './ProgressBar';
   export default {
     name: 'ListBoxView',
     provide() {
       return {}
     },
-    components: {},
+    components: {
+      ProgressBar
+    },
     mixins: [],
     inject: [
       'musicDataFlags',
@@ -69,20 +77,13 @@
       tabs(){
         return this.config.tabs;
       },
-      id(){
+      itemId(){
         return `ListBoxView_${this.config.focusKey}`;
       }
     },
     watch: {
     },
-    data(){
-      this.navList.push({
-        name: this.config.name,
-        id: this.id,
-        callback: () => {
-          this.$refs.input.focus()
-        }
-      });
+    data(){;
       return {
         isFocus: false
       }
@@ -107,30 +108,38 @@
     beforeDestory() {
     },
     mounted() {
+      this.navList.enter({
+        name: this.config.name,
+        id: this.itemId,
+        callback: () => {
+          this.$refs.input.focus()
+        }
+      });
       const {musicConfig, gameList, mv, config} = this;
+      const {tabs} = config;
       this.$shortCut = new ShortCut();
 
       config.type === 'modify' && this.$shortCut.init(this.$refs.input, {
         common: {
-          w: () => config.tabs.up(),
-          s: () => config.tabs.down(),
-          q: () => config.tabs.prev(),
-          e: () => config.tabs.next(),
-          // enter: () => this.search(),
-          107: () => config.tabs.add(),
-          delete: () => config.tabs.delete(),
-          c: () => config.tabs.copy(),
-          4: () => config.tabs.dec(),
-          6: () => config.tabs.enc(),
-          left: () => config.tabs.dec(),
-          right: () => config.tabs.enc(),
-          a: () => config.tabs.dec(),
-          d: () => config.tabs.enc(),
-          8: () => config.tabs.prevItem(),
-          2: () => config.tabs.nextItem(),
-          up: () => config.tabs.prevItem(),
-          down: () => config.tabs.nextItem(),
-          esc: () => this.$refs.input.blur(),
+          w: () => config.tabs.up('list_box_shortcut'),
+          s: () => config.tabs.down('list_box_shortcut'),
+          q: () => config.tabs.prev('list_box_shortcut'),
+          e: () => config.tabs.next('list_box_shortcut'),
+          enter: () => config.searchText ? tabs.search && tabs.search() : tabs.play && tabs.play(),
+          107: () => config.tabs.add(undefined, 'list_box_shortcut'),
+          delete: () => config.tabs.delete(undefined, 'list_box_shortcut'),
+          c: () => config.tabs.copy(undefined, 'list_box_shortcut'),
+          4: () => config.tabs.dec('list_box_shortcut'),
+          6: () => config.tabs.enc('list_box_shortcut'),
+          left: () => config.tabs.dec('list_box_shortcut'),
+          right: () => config.tabs.enc('list_box_shortcut'),
+          a: () => config.tabs.dec('list_box_shortcut'),
+          d: () => config.tabs.enc('list_box_shortcut'),
+          8: () => config.tabs.prevItem('list_box_shortcut'),
+          2: () => config.tabs.nextItem('list_box_shortcut'),
+          up: () => config.tabs.prevItem('list_box_shortcut'),
+          down: () => config.tabs.nextItem('list_box_shortcut'),
+          esc: () => this.$refs.input.blur('list_box_shortcut'),
         },
         alt: {},
         shift: {},
@@ -164,12 +173,12 @@
 
       config.type === 'listBox' && this.$shortCut.init(this.$refs.input, {
         common: {
-          up: () => config.tabs.list[config.tabs.current].prev(),
-          down: () => config.tabs.list[config.tabs.current].next(),
-          left: () => config.searchText || config.tabs.prev(),
-          right: () => config.searchText || config.tabs.next(),
-          enter: () => config.search && config.searchText ? config.search() : config.tabs.list[config.tabs.current].play('manual'),
-          backspace: () => config.searchText || config.tabs.current && config.tabs.prev(),
+          up: () => config.tabs.list[config.tabs.current].prev('list_box_shortcut'),
+          down: () => config.tabs.list[config.tabs.current].next('list_box_shortcut'),
+          left: () => config.searchText || config.tabs.prev('list_box_shortcut'),
+          right: () => config.searchText || config.tabs.next('list_box_shortcut'),
+          enter: () => config.search && config.searchText ? config.search() : config.tabs.list[config.tabs.current].play(),
+          backspace: () => config.searchText || config.tabs.current && config.tabs.prev('list_box_shortcut'),
           esc: () => this.$refs.input.blur(),
         },
       }, {
@@ -211,7 +220,7 @@
     transform-origin: center center;
     transform: translate(-50%, -50%) scale(0.7, 0.7);
     opacity: 0;
-    transition: all 1s;
+    transition: all .3s;
     will-change: opacity, transform, background-color;
 
     &::before {
@@ -231,13 +240,15 @@
       left: 50%;
       transform: translate(-50%, -50%);
       height: 50%;
-      width: 40%;
+      width: 50%;
       .music-lists-prev,
       .music-lists-next{
         position: absolute;
         top: 0;
-        height: 40px;
-        background-color: rgba(255,255,255,0.3);
+        height: 100%;
+        width: 50%;
+        background-color: rgba(255,255,255,0.01);
+        cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -302,35 +313,64 @@
             align-items: center;
             justify-content: center;
             white-space: nowrap;
-            color: #fff;
-            font-size: 16px;
-            line-height: 30px;
-            height: 30px;
+            color: #ccc;
+            font-size: 20px;
+            line-height: 50px;
+            height: 50px;
             width: 100%;
             overflow: hidden;
             text-overflow: ellipsis;
             transform: translate(0, 0, 0);
             text-shadow: 0 4px 4px #000;
             will-change: transform;
+            position: relative;
+            &::after{
+              position: absolute;
+              content: '';
+              display: block;
+              top: 0;
+              left: 0;
 
-            span {
+              width: 100%;
+              height: 100%;
+            }
+
+            >span {
+              display: flex;
+              width: 100%;
+              align-items: center;
+              justify-content: center;
               transform: translateY(0) scale(0.6, 0.6);
               transition: all 1s;
               will-change: transform;
-            }
 
-            &.active {
-              opacity: 1;
-
-              span {
-                transform: translateY(0) scale(1, 1);
+              .button{
+                display: block;
+                padding: 4px;
+                color: rgba(255,255,0,1);
+                cursor: pointer;
               }
             }
+
 
             &.playing {
               span {
                 transform: translateY(0) scale(0.9, 0.9);
               }
+            }
+
+            &.active {
+              opacity: 1;
+              &::after{
+                display: none;
+              }
+
+              span {
+                transform: translateY(0) scale(1, 1);
+              }
+            }
+            &:hover{
+              background-color: rgba(255,255,0,.1);
             }
           }
         }

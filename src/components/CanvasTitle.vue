@@ -4,18 +4,22 @@
   </div>
 </template>
 <script>
-  import {Random, random} from "../tools/random";
+  import {Random, } from "../tools/random";
   import {musicConfig} from "../music/MusicConfig";
-  import {musicData, musicDataFlags} from "../music/Music";
-  import {PS} from "../tools/PS";
 
   export default {
     name: 'CanvasText',
+    inject: [
+      'musicDataFlags',
+      'musicData',
+      'musicConfig',
+      'gameList',
+      'mv',
+      'modifyManager',
+      'navList'
+    ],
     data() {
       return {
-        musicDataFlags,
-        musicConfig,
-        musicData,
         width: 0,
         height: 0,
         count: 0,

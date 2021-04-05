@@ -43,13 +43,16 @@ export class ListBox {
     return this;
   }
 
-  prev() {
-    this.current = (this.current - 1 + this.len) % this.len;
+  prev(type: string) {
+    console.log(type)
+    // @ts-ignore;
+    this.setIndex((this.current - 1 + this.len) % this.len, ...arguments);
     return this;
   }
 
   next() {
-    this.current = (this.current + 1) % this.len;
+    // @ts-ignore;
+    this.setIndex((this.current + 1) % this.len, ...arguments);
     return this;
   }
 }

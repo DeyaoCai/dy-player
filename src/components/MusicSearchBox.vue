@@ -27,7 +27,27 @@
     ],
     data() {
       const tabs = new ListBox();
-      const lrcs = new ListBox();
+      const lrcs = new ListBox({
+        play: (type) => {
+          const curLrc = lrcs.list[lrcs.current];
+          this.mv.$audio.currentTime = curLrc.time / 10;
+        },
+        setIndex(index, type = '') {
+          if (this.setIndexFlag && !type) return this;
+          if (['list_box_click', 'list_box_shortcut'].includes(type)) {
+            const time = this.setIndexFlag = Date.now();
+            setTimeout(() => {
+              if(time === this.setIndexFlag) {
+                this.setIndexFlag = undefined;
+              }
+            }, 3000);
+          }
+          if (index > this.len - 1) index = this.len - 1;
+          if (index < 0) index = 0;
+          this.current = index;
+          return this;
+        }
+      });
       const sheet = new ListBox({
         play: (message) => this.play(message),
       });
@@ -62,7 +82,7 @@
     watch: {
       "lrcs.current"() {
         const {list, current} = this.lrcs;
-        this.modifyManager.commonOptions.changeBG_When_LRC_Changed && this.musicConfig.changePic();
+        this.modifyManager.getTrackByName('CommonOptionsTrack').getVal('changeBG_When_LRC_Changed') && this.musicConfig.changePic();
         this.musicConfig.setLrc(list[current] && list[current].name || '');
       },
       currentTime: {

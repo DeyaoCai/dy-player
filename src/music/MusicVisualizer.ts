@@ -3,7 +3,6 @@
 import {MusicConfig} from "src/music/MusicConfig";
 // @ts-ignore;
 import {biquadFilterFrequency} from "@/components/canvasConfig";
-import {DomUtil} from "@/tools/DomUtil";
 
 
 
@@ -13,11 +12,11 @@ interface IMusicVisualizerConifg {
   size: number;
   draw?: Function;
   volume?: number;
+  notClearPrev?: boolean;
 }
 
-function createPanner(){
-  console.log(MusicVisualizer.ac.createPanner)
-  const panner = MusicVisualizer.ac.createPanner();
+function createPanner(context: MusicVisualizer){
+  const panner = context.ac.createPanner();
   panner.panningModel = 'HRTF';
   panner.distanceModel = 'inverse';
   panner.refDistance = 1;
@@ -44,8 +43,8 @@ function createPanner(){
   return panner;
 }
 
-function initListener (){
-  const listener = MusicVisualizer.ac.listener;
+function initListener (constext: MusicVisualizer){
+  const listener = constext.ac.listener;
 
   if (listener.forwardX) {
 
@@ -70,9 +69,9 @@ function initListener (){
 }
 
 
-function createBiquadFilters(input: AudioNode, output: AudioNode) {
+function createBiquadFilters(context: MusicVisualizer, input: AudioNode, output: AudioNode) {
   // @ts-ignore;
-  const biquadFilters =  biquadFilterFrequency.map(frequency => createBiquadFilter(frequency));
+  const biquadFilters =  biquadFilterFrequency.map(frequency => createBiquadFilter(context, frequency));
   // @ts-ignore;
   biquadFilters.forEach(biquadFilter => {
     input.connect(biquadFilter);
@@ -82,8 +81,8 @@ function createBiquadFilters(input: AudioNode, output: AudioNode) {
   return biquadFilters;
 }
 
-function createBiquadFilter(frequency: number) {
-  const biquadFilter = MusicVisualizer.ac.createBiquadFilter();
+function createBiquadFilter(context: MusicVisualizer, frequency: number) {
+  const biquadFilter = context.ac.createBiquadFilter();
   biquadFilter.type = 'peaking';
   biquadFilter.frequency.value = frequency;
   return biquadFilter;
@@ -91,7 +90,7 @@ function createBiquadFilter(frequency: number) {
 
 function createAudioSource(context: MusicVisualizer) {
   const $audio = context.$audio = document.createElement('audio');
-  const source = MusicVisualizer.ac.createMediaElementSource($audio);
+  const source = context.ac.createMediaElementSource($audio);
   $audio.crossOrigin = "anonymous";
   $audio.autoplay = true;
   $audio.volume = context.musicConfig.volume.main;
@@ -100,8 +99,11 @@ function createAudioSource(context: MusicVisualizer) {
   return {$audio, source}
 }
 
+// @ts-ignore;
+window.dy_player_mv_cache || (window.dy_player_mv_cache = []);
 
 export class MusicVisualizer {
+  static dtos: MusicVisualizer[] = [];
   duration: number = 1;
   playing: boolean = false;
   stopType: string = '';
@@ -124,24 +126,35 @@ export class MusicVisualizer {
   xhr: XMLHttpRequest;
   panner: PannerNode;
   $audio: HTMLMediaElement;
+  isDestoryed: boolean = false;
   // 音频上下文
   ac: AudioContext;
-  // @ts-ignore;
-  static ac: AudioContext = new (window.AudioContext || window.webkitAudioContext)();//共用的
   constructor(obj: IMusicVisualizerConifg) {
+    if (!obj.notClearPrev) {
+      // @ts-ignore;
+      while (dy_player_mv_cache.length){
+        // @ts-ignore;
+        const cur = dy_player_mv_cache.shift();
+        cur.isDestoryed = true;
+        cur.destory();
+      }
+    }
+    // @ts-ignore;
+    dy_player_mv_cache.push(this);
+    // @ts-ignore;
+    this.ac = new (window.AudioContext || window.webkitAudioContext)();
 
-    this.ac = MusicVisualizer.ac;
     this.musicConfig = obj.musicConfig;
 
     const {$audio, source} = createAudioSource(this);
     this.$audio = $audio;
     $audio.volume = 0.01;
-    const panner = this.panner = createPanner();
-    initListener();
+    const panner = this.panner = createPanner(this);
+    initListener(this);
 
-    const analyser = this.analyser = MusicVisualizer.ac.createAnalyser();
-    const analyserBefore = this.analyserBefore = MusicVisualizer.ac.createAnalyser();
-    const gain = this.gain = MusicVisualizer.ac.createGain();
+    const analyser = this.analyser = this.ac.createAnalyser();
+    const analyserBefore = this.analyserBefore = this.ac.createAnalyser();
+    const gain = this.gain = this.ac.createGain();
     gain.gain.value = 0.5;
 
 
@@ -149,10 +162,10 @@ export class MusicVisualizer {
     analyserBefore.fftSize = analyser.fftSize = this.size * 2;
 
 
-    const delay = this.delay = MusicVisualizer.ac.createDelay();
-    delay.delayTime.value = 1.8;
+    const delay = this.delay = this.ac.createDelay();
+    delay.delayTime.value = 0.8;
     // navigator.mediaDevices.getUserMedia({audio: true, video: false}).then(res=> {
-    //   const node = MusicVisualizer.ac.createMediaStreamSource(res);
+    //   const node = this.ac.createMediaStreamSource(res);
     //   $audio.autoplay = false;
     //   node.connect(analyserBefore);
     // });
@@ -161,12 +174,12 @@ export class MusicVisualizer {
     source.connect(analyserBefore);
     // 音源 -> 滤波器
     // @ts-ignore;
-    this.biquadFilters = createBiquadFilters(analyserBefore, delay);
+    this.biquadFilters = createBiquadFilters(this, analyserBefore, delay);
 
     delay.connect(analyser);
     analyser.connect(panner); // 最终听到的
     panner.connect(gain);
-    gain.connect(MusicVisualizer.ac.destination);
+    gain.connect(this.ac.destination);
 
 
     // ajax
@@ -188,12 +201,16 @@ export class MusicVisualizer {
     };
     this.xhr.send();
   };
+  destory(){
+    this.$audio && this.$audio.pause();
+    this.ac.suspend();
+  }
 
 
 // BaseAudioContext.decodeAudioData()用来生成AudioBuffer
 // AudioBuffer供AudioBufferSourceNode使用，这样，AudioBufferSourceNode才可以播放音频数据
   decode(arrayBuffer: ArrayBuffer, fun: Function) {
-    MusicVisualizer.ac.decodeAudioData(arrayBuffer, function (buffer: any) {
+    this.ac.decodeAudioData(arrayBuffer, function (buffer: any) {
       fun(buffer);
     }, function (err: Error) {
       console.log(err);
@@ -208,7 +225,7 @@ export class MusicVisualizer {
     if (path instanceof ArrayBuffer) {
       this.decode(path, (buffer: ArrayBuffer) => {
         if (n !== this.count) return;
-        const bufferSource: AudioBufferSourceNode = MusicVisualizer.ac.createBufferSource();
+        const bufferSource: AudioBufferSourceNode = this.ac.createBufferSource();
         // 将解码成功后的buffer赋值给bufferSource的buffer属性
         // @ts-ignore;
         bufferSource.buffer = buffer;
@@ -217,20 +234,17 @@ export class MusicVisualizer {
         // @ts-ignore;
         bufferSource[bufferSource.start ? "start" : "noteOn"](0);
         this.source = bufferSource;
-        this.resetLatestPlayTime && (this.latestPlayTime = MusicVisualizer.ac.currentTime);
+        this.resetLatestPlayTime && (this.latestPlayTime = this.ac.currentTime);
       });
     } else {
-
-      console.log('play')
       // @ts-ignore;
       if (window.isPhone) {
-        console.log('play')
         this.load(path, (arrayBuffer: ArrayBuffer) => {
           if (n !== this.count) return;
           this.decode(arrayBuffer, (buffer: ArrayBuffer) => {
             this.playing = true;
             if (n !== this.count) return;
-            const bufferSource: AudioBufferSourceNode = MusicVisualizer.ac.createBufferSource();
+            const bufferSource: AudioBufferSourceNode = this.ac.createBufferSource();
             // @ts-ignore;
             bufferSource.buffer = buffer;
             bufferSource.connect(this.analyserBefore);
@@ -243,7 +257,7 @@ export class MusicVisualizer {
                 this.musicConfig.ended && this.musicConfig.ended();
               }
             };
-            this.resetLatestPlayTime && (this.latestPlayTime = MusicVisualizer.ac.currentTime);
+            this.resetLatestPlayTime && (this.latestPlayTime = this.ac.currentTime);
           });
         });
       } else {
@@ -300,21 +314,8 @@ export class MusicVisualizer {
         }
         this.setVolume();
       }
-      requestAnimationFrame(fn);
+      this.isDestoryed || requestAnimationFrame(fn);
     }
     requestAnimationFrame(fn);
   }
 }
-
-
-// 解决 Chrome 66之后高版本中AudioContext被强行suspend的问题
-// @ts-ignore;
-if (typeof AudioContext !== "undefined" || typeof webkitAudioContext !== "undefined") {
-  const resumeAudio = function () {
-    if (!MusicVisualizer.ac) return;
-    MusicVisualizer.ac.state === "suspended" && MusicVisualizer.ac.resume();
-    document.removeEventListener("click", resumeAudio);
-  };
-  document.addEventListener("click", resumeAudio);
-}
-

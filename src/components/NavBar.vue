@@ -1,13 +1,22 @@
 <template>
   <div class="nav-bar" :class="{active: active}" @click="active =! active">
     <ul>
-      <li v-for="(item, index) in navList" @click.stop="item.callback && item.callback()">{{item.name}}</li>
+      <li v-for="(item, index) in navList.list">
+        <template v-if="item.type==='fileReader'">
+          <label :for="item.id">
+            {{item.name}}
+            <input type="file" :id="item.id" @change.stop="item.callback && item.callback($event)">
+          </label>
+        </template>
+        <template v-else>
+          <div @click.stop="item.callback && item.callback()">{{item.name}}</div>
+        </template>
+      </li>
       <slot></slot>
     </ul>
   </div>
 </template>
 <script>
-  import {shortCut, ShortCut} from "../tools/ShortCut";
 
   export default {
     name: 'BalanceView',

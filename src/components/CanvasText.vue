@@ -39,9 +39,8 @@
       'musicDataFlags.shockFlag': {
         immediate: true,
         handler() {
-          this.modifyManager.commonOptions.CanvasTextMalfunction && (this.shallMalfunction = true);
+          this.modifyManager.getTrackByName('CommonOptionsTrack').getVal('CanvasTextMalfunction') && (this.shallMalfunction = true);
           this.size = 0;
-          console.log(789)
         }
       }
     },

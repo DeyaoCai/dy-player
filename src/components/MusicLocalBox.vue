@@ -40,7 +40,7 @@
           name: '测试歌曲',
           tabs,
           searchText: '',
-          focusKey: 'e',
+          focusKey: 'w',
         },
         tabs,
         songList,
@@ -72,15 +72,15 @@
     },
     mounted() {
       const {musicConfig, gameList, mv} = this;
-      musicConfig.ended = () => {
-        setTimeout(() => {
-          gameList.endSong();
-          setTimeout(() => {
-            this.songList.next();
-            this.songList.play();
-          }, 5000);
-        }, mv.delay.delayTime.value * 1000 + gameList.buffer + 1000)
-      };
+      // musicConfig.ended = () => {
+      //   setTimeout(() => {
+      //     gameList.endSong();
+      //     setTimeout(() => {
+      //       this.songList.next();
+      //       this.songList.play();
+      //     }, 5000);
+      //   }, mv.delay.delayTime.value * 1000 + gameList.buffer + 1000)
+      // };
 
       shortCut.init(undefined, {
         alt: {

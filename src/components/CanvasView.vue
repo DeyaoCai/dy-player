@@ -29,13 +29,14 @@
         deep: true,
         handler() {
           // 重新渲染的时候， 可能没初始化? // 其实是之前的被销毁了
-          // this.$canvas && this.ctx && this.renderCanvas()
+          this.$canvas && this.ctx && this.renderCanvas()
         }
       }
     },
     methods: {
       renderCanvas() {
-        const canvasConfig = this.config;
+        const {mv, musicData, config, musicConfig} = this;
+        const canvasConfig = config;
         this.$canvasHidded.width = this.width = this.$el.offsetWidth;
         this.$canvasHidded.height = this.height = this.$el.offsetHeight;
         mv.size = canvasConfig.dataSize * 8;
@@ -97,7 +98,7 @@
         ctx.lineWidth = baseSize * canvasConfig.mainRadiusLineWidth / 1000;
         ctx.beginPath();
         if (canvasConfig.direction === 0) {
-          ctx.arc(midPosition.x, midPosition.y, mainRadius, 0, 2 * Math.PI);
+          ctx.arc(midPosition.x, midPosition.y, Math.abs(mainRadius), 0, 2 * Math.PI);
         } else {
 
         }

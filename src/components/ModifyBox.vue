@@ -21,7 +21,7 @@
           name: '参数调整',
           tabs: this.modifyManager,
           searchText: '',
-          focusKey: 'w',
+          focusKey: 'e',
         },
       }
     },
@@ -39,8 +39,10 @@
 
 <style lang="less" type="text/less" scoped>
   .music-wrap {
-    .song-list {
-      background-color: rgba(34, 34, 34, 0.8);
+    /deep/.music-lists{
+      .song-list {
+        background-color: rgba(34, 34, 34, 0.3);
+      }
     }
 
     &::before {

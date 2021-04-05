@@ -38,6 +38,9 @@ export class GetType {
   static isDate(item: any) {
     return GetType.getType(item) === "Date"
   };
+  static isEmpty(item:any){
+    return ['', undefined, null].includes(item);
+  }
 }
 
 
