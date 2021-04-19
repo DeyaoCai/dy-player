@@ -8,6 +8,10 @@ node_modules
 !/dist/img/22824.jpg
 !/dist/img/22891.jpg
 
+/publish/img/*
+!/publish/img/22824.jpg
+!/publish/img/22891.jpg
+
 # local env files
 
 # Log files
