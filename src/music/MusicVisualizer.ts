@@ -265,9 +265,9 @@ export class MusicVisualizer {
           this.load(path, (res: any) => {
             const {ac} = this;
             const source = ac.createBufferSource();
-            ac.decodeAudioData(res, function (decodeData) {
+            ac.decodeAudioData(res, (decodeData) => {
               source.buffer = decodeData;
-              source.connect(ac.destination);
+              source.connect(this.analyserBefore);
               source.start();
             })
           })
