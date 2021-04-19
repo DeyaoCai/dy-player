@@ -4,11 +4,7 @@
 <script>
   import * as THREE from 'three';
   import {ObjectLoader} from "three/src/loaders/ObjectLoader";
-  import {OrbitControls} from "../tools/three/ctrl/OrbitControls";
-  import {Rhino3dmLoader} from "@/tools/three/jsm/loaders/3DMLoader";
-  import {MD2Loader} from "@/tools/three/jsm/loaders/MD2Loader";
-  import {FBXLoader} from "@/tools/three/jsm/loaders/FBXLoader";
-  import {TGALoader} from "@/tools/three/jsm/loaders/TGALoader";
+  import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
   import {LineGeometry} from "three/examples/jsm/lines/LineGeometry";
   import { GeometryUtils } from 'three/examples/jsm/utils/GeometryUtils';
   import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
