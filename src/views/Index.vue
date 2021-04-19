@@ -18,16 +18,15 @@
           v-if="commonOptions.CanvasView && item && item.constructor.name_ === 'CanvasTrack'"
         ></CanvasView>
       </template>
-
     </div>
     <VideoView :index="0" v-if="commonOptions.VideoView"></VideoView>
     <VideoView :index="1" v-if="commonOptions.VideoView1"></VideoView>
     <DomClock v-if="commonOptions.DomClock"></DomClock>
+    <ThreeView v-if="musicData.realTimeData.data"></ThreeView>
   </div>
 </template>
 
 <script>
-  import {onMounted} from 'vue';
   import {ShortCut, shortCut} from "../tools/ShortCut";
   import {Color, GameList, GameScene, MusicData, MusicDataFlags, UniqueList} from "../music/Music";
   import {MusicConfig} from "../music/MusicConfig";
@@ -39,6 +38,7 @@
   import MusicSearchBox from '../components/MusicSearchBox';
   import MusicLocalBox from '../components/MusicLocalBox';
   import ModifyBox from '../components/ModifyBox';
+  import ThreeView from '../components/ThreeView';
   import CanvasView from '../components/CanvasView';
   import CanvasPic from '../components/CanvasPic';
   import CanvasTitle from '../components/CanvasTitle';
@@ -77,7 +77,7 @@
 
     const mv = new MusicVisualizer({
       //定义的音频数组长度
-      size: Math.pow(2, 6),
+      size: Math.pow(2, 7),
       // draw: draw,
       musicConfig,
       volume: 0.3
@@ -164,6 +164,7 @@
       CanvasText,
       CanvasTitle,
       DomClock,
+      ThreeView
     },
     provide() {
       const {

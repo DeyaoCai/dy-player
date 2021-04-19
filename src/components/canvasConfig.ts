@@ -195,7 +195,7 @@ class ${className} extends Track {
 const trackConfigs = [
   {
     name: 'CommonOptionsTrack', required: true, list: [
-      ['CanvasView', '开启音频可视化轨道', 1, 'int', 0, 1, '是否启用'],
+      ['CanvasView', '开启音频可视化轨道', 0, 'int', 0, 1, '是否启用'],
       ['CanvasPic', '开启背景轨道', 0, 'int', 0, 1, '是否启用'],
       ['CanvasPicMalfunction', '开启背景轨道故障特效', 0, 'int', 0, 1, '是否启用'],
       ['CanvasText', '开启歌词轨道', 0, 'int', 0, 1, '是否启用'],
@@ -205,7 +205,7 @@ const trackConfigs = [
       ['VideoView1', '开启视频轨道2', 0, 'int', 0, 1, '是否启用'],
       ['DomClock', '显示时钟', 0, 'int', 0, 1, '是否启用'],
       ['gameUI', '显示游戏界面', 0, 'int', 0, 1, '是否启用'],
-      ['gameScene', '显示游戏场景', 1, 'int', 0, 1, '是否启用'],
+      ['gameScene', '显示游戏场景', 0, 'int', 0, 1, '是否启用'],
     ]
   },
   {

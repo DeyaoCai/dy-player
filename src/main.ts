@@ -4,9 +4,14 @@ function IsPhone() {
 // @ts-ignore;
 window.isPhone = IsPhone();
 import './assets/style/index.less'
-import { createApp } from 'vue'
 import App from './App.vue'
 import './registerServiceWorker'
-import router from './router'
 
-createApp(App).use(router).mount('#app')
+
+import Vue from 'vue'
+
+new Vue({render: (h) => h(App),}).$mount('#app');
+
+
+// import { createApp } from 'vue'
+// createApp(App).mount('#app')
