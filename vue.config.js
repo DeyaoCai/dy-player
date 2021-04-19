@@ -1,3 +1,6 @@
+
+process.env.VUE_APP_DE_PLAYER_ENV = process.argv.includes('build') ? 'prod' : 'dev';
+
 module.exports = {
   publicPath: './',
   devServer: {
