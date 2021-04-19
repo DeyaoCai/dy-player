@@ -148,6 +148,7 @@ export class MusicVisualizer {
 
     const {$audio, source} = createAudioSource(this);
     this.$audio = $audio;
+    document.body.appendChild($audio);
     $audio.volume = 0.01;
     const panner = this.panner = createPanner(this);
     initListener(this);

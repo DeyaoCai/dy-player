@@ -25,7 +25,8 @@
       'navList'
     ],
     data() {
-      const tabs = new ListBox();
+      const tabs = new ListBox({
+      });
       const songList = new ListBox({
         play: () => {
           this.play()
@@ -39,8 +40,26 @@
           type: 'listBox',
           name: '测试歌曲',
           tabs,
-          searchText: '',
+          searchText: './sound/testSound.mp3',
           focusKey: 'w',
+          search: () => {
+            const {gameList, mv} = this;
+            const play = () => {
+              gameList.startSong();
+              mv.play(this.config.searchText);
+              // 清除输入
+              this.config.searchText = "";
+            };
+            if (mv.$audio.paused){
+              play()
+            } else {
+              mv.$audio.pause();
+              setTimeout(() => {
+                play()
+              }, mv.delay.delayTime.value * 1000 + gameList.buffer)
+            }
+
+          }
         },
         tabs,
         songList,
