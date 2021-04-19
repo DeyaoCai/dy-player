@@ -171,10 +171,28 @@ export class Track {
 
 
 
+// function createTrackClass(className: string) {
+//   const string = `
+// class ${className} extends Track {
+//   static name_ = '${className}';
+//   constructor() {
+//     const [...rest] = arguments;
+//     super(...rest);
+//   }
+//
+//   static setConfig(key, name, defaultValue, valueType, min, max, desc) {
+//     Track.commonConfigs.${className} || (Track.commonConfigs.${className} = []);
+//     Track.commonConfigs.${className}.push([key, name, defaultValue, valueType, min, max, desc]);
+//     return ${className};
+//   }
+// }`;
+//   return eval(`(${string})`);
+// }
+
 function createTrackClass(className: string) {
   const string = `
 class ${className} extends Track {
-  static name_ = '${className}';
+  // static name_ = '${className}';
   constructor() {
     const [...rest] = arguments;
     super(...rest);
@@ -186,10 +204,17 @@ class ${className} extends Track {
     return ${className};
   }
 }`;
-  return eval(`(${string})`);
+  const aa = eval(`(${string})`);
+  aa.name_ = className;
+  // @ts-ignore;
+  aa.setConfig = function (key, name, defaultValue, valueType, min, max, desc) {
+    // @ts-ignore;
+    Track.commonConfigs[className] || (Track.commonConfigs[className] = []);
+    Track.commonConfigs[className].push([key, name, defaultValue, valueType, min, max, desc]);
+    return Track.commonConfigs[className];
+  }
+  return aa;
 }
-
-
 
 
 const trackConfigs = [
@@ -623,8 +648,10 @@ const TrackClass: {[index: string]: Track} = {
 };
 type TTrackClass = keyof typeof TrackClass;
 trackConfigs.forEach(config => {
+  // @ts-ignore;
   const track = TrackClass[config.name] = createTrackClass(config.name);
   config.list.forEach(conf => {
+    // @ts-ignore;
     track.setConfig(...conf)
   });
 
