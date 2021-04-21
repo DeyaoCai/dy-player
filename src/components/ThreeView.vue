@@ -153,7 +153,7 @@
 
 
         function makeIcosahedron() {
-          const texture = new THREE.TextureLoader().load('img/22824.jpg');
+          const texture = new THREE.TextureLoader().load('img/pop-star.jpg');
           const icosahedronGeometry = new THREE.IcosahedronBufferGeometry(2);
           const icosahedronMaterial = new THREE.MeshPhysicalMaterial({map: texture});
           const icosahedron = new THREE.Mesh(icosahedronGeometry, icosahedronMaterial);
@@ -201,9 +201,11 @@
 
 
         // 地面
-        const groundMaterial = new THREE.MeshPhongMaterial({color: 0x333333, shininess: 0});
+
+        const texture = new THREE.TextureLoader().load('img/pop-star.jpg');
+        const groundMaterial = new THREE.MeshPhongMaterial({color: 0x333333, shininess: 0, map: texture});
         const ground = new THREE.Mesh(
-          new THREE.PlaneBufferGeometry(200, 200, 1, 1),
+          new THREE.PlaneBufferGeometry(172, 72, 1, 1),
           groundMaterial
         );
         ground.rotation.x = -Math.PI / 2; // rotates X/Y to X/Z

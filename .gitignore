@@ -4,13 +4,11 @@ node_modules
 /public/img/*
 !/public/img/22824.jpg
 !/public/img/22891.jpg
+!/public/img/pop-star.jpg
 /dist/img/*
 !/dist/img/22824.jpg
 !/dist/img/22891.jpg
-
-/publish/img/*
-!/publish/img/22824.jpg
-!/publish/img/22891.jpg
+!/dist/img/pop-star.jpg
 
 # local env files
 
