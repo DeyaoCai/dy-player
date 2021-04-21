@@ -77,7 +77,7 @@
 
     const mv = new MusicVisualizer({
       //定义的音频数组长度
-      size: Math.pow(2, 7),
+      size: Math.pow(2, 5),
       // draw: draw,
       musicConfig,
       volume: 0.3
